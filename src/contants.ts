@@ -1,0 +1,1 @@
+export const APP_ROUTE="http://localhost:5173/"
