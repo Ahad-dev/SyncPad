@@ -37,6 +37,11 @@ class Auth {
         return { data, error };
     }
 
+    async getUserSession() {
+        const { data, error } = await supabase.auth.getSession();
+        return { data, error };
+    }
+
 }
 
 const authService = new Auth()

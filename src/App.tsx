@@ -11,6 +11,10 @@ import SignInPage from "./pages/auth/sign-in"
 import ForgotPasswordPage from "./pages/auth/forgot-password"
 import UpdatePasswordPage from "./pages/auth/update-password"
 import Home from "./pages/home"
+import DashboardPage from "./pages/dashboard"
+import Layout from "./pages/layout"
+import AddNewNote from "./pages/add-new-note"
+import { Toaster } from "./components/ui/sonner"
 
 const App = () => {
   const dispatch = useDispatch();
@@ -31,17 +35,33 @@ const App = () => {
   }, [dispatch]);
 
   return (
+    <>
+          <Toaster
+        richColors={true}
+        position="bottom-right"
+      />
     <Routes>
+
+      {/* Protected routes with layout */}
       <Route path="/" element={
         <ProtectedRoute>
-          <Home/>
+          <Layout />
         </ProtectedRoute>
-      } />
+      }>
+        <Route index element={<DashboardPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="home" element={<Home />} />
+      </Route>
+        <Route path="new/:noteId" element={<AddNewNote title="Create New Note" buttonText="Create" />} />
+        <Route path="update/:noteId" element={<AddNewNote title="Update Note" buttonText="Update" />} />
+
+      {/* Auth routes without layout */}
       <Route path="/sign-up" element={<SignUpPage />} />
       <Route path="/sign-in" element={<SignInPage />} />
-  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-  <Route path="/update-password" element={<UpdatePasswordPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/update-password" element={<UpdatePasswordPage />} />
     </Routes>
+    </>
   )
 }
 
