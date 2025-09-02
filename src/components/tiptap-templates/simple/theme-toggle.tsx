@@ -19,8 +19,8 @@ export function ThemeToggle() {
 
   React.useEffect(() => {
     const initialDarkMode =
-      !!document.querySelector('meta[name="color-scheme"][content="dark"]') ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+      !!document.querySelector('meta[name="color-scheme"][content="light"]') ||
+      window.matchMedia("(prefers-color-scheme: light)").matches
     setIsDarkMode(initialDarkMode)
   }, [])
 

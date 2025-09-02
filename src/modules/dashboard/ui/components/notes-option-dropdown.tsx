@@ -4,7 +4,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Edit, Trash2, Share, FileEdit } from "lucide-react";
+import { MoreVertical, Edit, Trash2, Share, FileEdit, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useConfirmation } from "@/hooks/use-confirmation";
 import ShareDialog from "@/components/ShareDialog";
@@ -19,9 +19,10 @@ import NotesService from "@/supabase/utils/notes";
 
 interface NotesOptionDropdownProps {
   note: Note;
+  role: string;
 }
 
-const NotesOptionDropdown = ({ note }: NotesOptionDropdownProps) => {
+const NotesOptionDropdown = ({ note, role }: NotesOptionDropdownProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -36,7 +37,7 @@ const NotesOptionDropdown = ({ note }: NotesOptionDropdownProps) => {
 
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/update/${note.id}`);
+    navigate(`/shared/${note.id}`);
   };
 
   const handleRename = (e: React.MouseEvent) => {
@@ -67,7 +68,6 @@ const NotesOptionDropdown = ({ note }: NotesOptionDropdownProps) => {
   const handleRenameSubmit = async (newName: string) => {
     
     try {
-      // TODO: Implement actual API call to rename note
       dispatch(renameNote({ id: note.id, newTitle: newName }));
       await NotesService.update(note.id, { title: newName });
       toast.success("Note renamed successfully");
@@ -78,10 +78,11 @@ const NotesOptionDropdown = ({ note }: NotesOptionDropdownProps) => {
     } 
   };
 
+
   const DROP_DOWN_OPTION = [
     {
-      icon: <Edit className="mr-2 h-4 w-4 text-green-500" />,
-      label: "Edit",
+      icon: <Eye className="mr-2 h-4 w-4 text-green-500" />,
+      label: "View",
       onClick: handleEdit,
     },
     {
@@ -100,6 +101,13 @@ const NotesOptionDropdown = ({ note }: NotesOptionDropdownProps) => {
       onClick: handleDelete,
       className: "text-destructive focus:text-destructive",
     },
+  ] 
+  const OPTION_COLLABROTOR= [
+    {
+      icon: <Eye className="mr-2 h-4 w-4 text-green-500" />,
+      label: "View",
+      onClick: handleEdit,
+    },
   ];
   return (
     <>
@@ -114,11 +122,20 @@ const NotesOptionDropdown = ({ note }: NotesOptionDropdownProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          {DROP_DOWN_OPTION.map((option, index) => (
+
+          {role === 'Owner' ? DROP_DOWN_OPTION.map((option, index) => (
             <DropdownMenuItem
               key={index}
               onClick={option.onClick}
               className={option.className}
+            >
+              {option.icon}
+              {option.label}
+            </DropdownMenuItem>
+          )):OPTION_COLLABROTOR.map((option, index) => (
+            <DropdownMenuItem
+              key={index}
+              onClick={option.onClick}
             >
               {option.icon}
               {option.label}

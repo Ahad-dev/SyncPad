@@ -81,6 +81,30 @@ class Notes {
 
         return notes
     }
+   async getSharedWithUser(user_id: string) {
+  const { data, error } = await supabase
+    .from("collaborators")
+    .select(`
+      note:notes(
+        *,
+        profile:profiles(*)
+      )
+    `)
+    .eq("user_id", user_id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  // Flatten result so you get { ...note, profile: {...} }
+  const flattened = data.map((row) => ({
+    ...row.note,
+  })).flat();
+
+  return flattened;
+}
+
+
 }
 
 const NotesService = new Notes()

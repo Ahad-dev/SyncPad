@@ -1,14 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { formatDate } from "@/lib/date";
-import type { Note } from "@/types";
+import type { Note, SharedNote } from "@/types";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { Clock } from "lucide-react";
 import NotesOptionDropdown from "./notes-option-dropdown";
 import { useState } from "react";
 
 interface NoteCardProps {
-  note: Note;
+  note: SharedNote | Note;
   role: string;
 }
 
@@ -27,15 +27,19 @@ const NoteCard = ({ note, role }: NoteCardProps) => {
                 {note.title}
               </h3>
               <div className="flex items-center gap-4 mt-2">
-                {role == "Collaborator" && (
+                {"profile" in note && role == "Collaborator" && (
                   <div className="flex items-center gap-2">
                     <Avatar className="h-4 w-4">
-                      <AvatarFallback className="text-xs bg-muted">
-                        {note.owner_id?.charAt(0).toUpperCase()}
+                      <AvatarFallback>
+                        {note.profile.avatar_url ? <img src={note.profile.avatar_url} alt={note.profile.name!} /> 
+                        : 
+                        note.profile.name?.charAt(0).toUpperCase()
+                        }
                       </AvatarFallback>
                     </Avatar>
+
                     <span className="text-xs text-muted-foreground">
-                      by {note.owner_id}
+                      by {note.profile?.name}
                     </span>
                   </div>
                 )}
@@ -52,7 +56,7 @@ const NoteCard = ({ note, role }: NoteCardProps) => {
               <Badge variant="secondary" className="text-xs">
                 {role}
               </Badge>
-              <NotesOptionDropdown note={note} />
+              <NotesOptionDropdown role={role} note={note} />
             </div>
           </div>
         </div>

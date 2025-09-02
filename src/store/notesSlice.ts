@@ -1,14 +1,13 @@
-import type { Note } from '@/types';
+import type { Note, SharedNote } from '@/types';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { JSONContent } from '@tiptap/react';
 
 // Define a simplified Note type that your frontend actually needs
 
 
 interface NotesState {
   myNotes: Note[];
-  sharedNotes: Note[];
+  sharedNotes: SharedNote[];
   loading: boolean;
   error: string | null;
 }
@@ -36,7 +35,7 @@ const notesSlice = createSlice({
     setMyNotes: (state, action: PayloadAction<Note[]>) => {
       state.myNotes = action.payload;
     },
-    setSharedNotes: (state, action: PayloadAction<Note[]>) => {
+    setSharedNotes: (state, action: PayloadAction<SharedNote[]>) => {
       state.sharedNotes = action.payload;
     },
     

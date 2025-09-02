@@ -183,9 +183,13 @@ const MobileToolbarContent = ({
 export function Editor({
   content,
   onEditorReady,
+  editable = true,
+  showToolbar = true,
 }: {
   content?: any
   onEditorReady?: (editor: any) => void
+  editable?: boolean
+  showToolbar?: boolean
 }) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
@@ -197,13 +201,14 @@ export function Editor({
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
+    editable: editable,
     editorProps: {
       attributes: {
         autocomplete: "off",
         autocorrect: "off",
         autocapitalize: "off",
-        "aria-label": "Main content area, start typing to enter text.",
-        class: "simple-editor",
+        "aria-label": editable ? "Main content area, start typing to enter text." : "View-only content area.",
+        class: `simple-editor ${!editable ? 'read-only' : ''}`,
       },
     },
     extensions: [
@@ -256,34 +261,36 @@ export function Editor({
   return (
     <EditorContext.Provider value={{ editor }}>
       <div className="simple-editor-wrapper">
-        <Toolbar
-          ref={toolbarRef}
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
-              : {}),
-          }}
-        >
-          {mobileView === "main" ? (
-            <MainToolbarContent
-              onHighlighterClick={() => setMobileView("highlighter")}
-              onLinkClick={() => setMobileView("link")}
-              isMobile={isMobile}
-            />
-          ) : (
-            <MobileToolbarContent
-              type={mobileView === "highlighter" ? "highlighter" : "link"}
-              onBack={() => setMobileView("main")}
-            />
-          )}
-        </Toolbar>
+        {showToolbar && (
+          <Toolbar
+            ref={toolbarRef}
+            style={{
+              ...(isMobile
+                ? {
+                    bottom: `calc(100% - ${height - rect.y}px)`,
+                  }
+                : {}),
+            }}
+          >
+            {mobileView === "main" ? (
+              <MainToolbarContent
+                onHighlighterClick={() => setMobileView("highlighter")}
+                onLinkClick={() => setMobileView("link")}
+                isMobile={isMobile}
+              />
+            ) : (
+              <MobileToolbarContent
+                type={mobileView === "highlighter" ? "highlighter" : "link"}
+                onBack={() => setMobileView("main")}
+              />
+            )}
+          </Toolbar>
+        )}
 
         <EditorContent
           editor={editor}
           role="presentation"
-          className="simple-editor-content"
+          className={`simple-editor-content ${!editable ? 'cursor-default' : ''}`}
         />
       </div>
     </EditorContext.Provider>

@@ -1,14 +1,17 @@
 import { Card, CardHeader,CardTitle,CardContent } from '@/components/ui/card'
-import type { Note } from '@/types'
+import type { Note, SharedNote } from '@/types'
 import { FileText} from 'lucide-react'
 import React from 'react'
 import NoteCard from './note-card'
+import { useSelector } from 'react-redux'
+import type { RootState } from '@/store/store'
+import NoteSkeleton from './note-skeleton'
 
 interface NotesListProps {
-  notes:Note[]
-  Icon: React.ComponentType<any>
-  role:string,
-  title:string
+  notes: SharedNote[] | Note[];
+  Icon: React.ComponentType<any>;
+  role: string;
+  title: string;
 }
 
 const NotesList = ({
@@ -17,6 +20,7 @@ const NotesList = ({
   role,
   title
 }: NotesListProps) => {
+  const {loading } = useSelector((state: RootState) => state.notes);
   return (
     <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
@@ -31,7 +35,11 @@ const NotesList = ({
         </div>
       </CardHeader>
       <CardContent className="pt-0">
-        {notes.length === 0 ? (
+        
+        {
+        loading ? <NoteSkeleton /> :
+
+        notes.length === 0 ? (
           <div className="text-center py-8">
             <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-full w-fit mx-auto mb-4">
               <FileText className="h-6 w-6 text-muted-foreground" />
@@ -40,6 +48,7 @@ const NotesList = ({
             <p className="text-sm text-muted-foreground">Create your first note to get started!</p>
           </div>
         ) : (
+
           <div className="space-y-3">
             {notes.map(note => (
               <NoteCard
