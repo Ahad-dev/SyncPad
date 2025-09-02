@@ -52,8 +52,9 @@ const App = () => {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="home" element={<Home />} />
       </Route>
-        <Route path="new/:noteId" element={<AddNewNote title="Create New Note" buttonText="Create" />} />
-        <Route path="update/:noteId" element={<AddNewNote title="Update Note" buttonText="Update" />} />
+        <Route path="new/:noteId" element={<AddNewNote title="Create New Note" />} />
+        <Route path="update/:noteId" element={<AddNewNote title="Update Note"  />} />
+        <Route path="shared/:noteId" element={<AddNewNote title="Shared Note"  isShared />} />
 
       {/* Auth routes without layout */}
       <Route path="/sign-up" element={<SignUpPage />} />
