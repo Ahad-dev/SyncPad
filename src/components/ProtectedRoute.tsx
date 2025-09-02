@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const auth = useSelector((state: any) => state.auth.auth);
@@ -7,7 +8,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
 
   console.log(auth)
   if (loading) {
-    return <p>Loading...</p>; // or a loading spinner
+    return <LoadingSpinner />;
   }
 
   if (!auth) {
